@@ -1,15 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Home = () => {
-    const [game, setGame] = useState('')
+    const [game, setGame] = useState([])
     const [description, setDescription] = useState('')
+
+    const fetchGames = async () => {
+        await fetch('http://localhost:3000/games')
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                setGame(data)
+            })
+    }
+
+    useEffect(() => {
+        fetchGames()
+    }, [])
 
     const show = () => {
         gamesList.push(game)
         gamesList.push(description)
     }
-
-    console.log(gamesList)
 
     return (
         <div>
@@ -31,10 +42,14 @@ const Home = () => {
             <button onClick={show}>Registrar</button>
 
             <div>
-                <>
-                    <h4>Jogo</h4>
-                    <p>Descrição</p>
-                </>
+                {
+                    game.map((item) => (
+                        <div>
+                            <h4>{item.title}</h4>
+                            <p>{item.description}</p>
+                        </div>
+                    ))
+                }
             </div>
         </div>
     )
